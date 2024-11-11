@@ -89,4 +89,8 @@ from sockets.chat import register_socketio_events
 register_socketio_events(socketio)
 
 if __name__ == '__main__':
-    socketio.run(app, host='0.0.0.0', port=5000, debug=True)
+    import os
+    if os.getenv("FLASK_ENV") == "production":
+        print("Running in production mode with gunicorn.")
+    else:
+        socketio.run(app, host='0.0.0.0', port=5000, debug=True)
