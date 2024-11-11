@@ -10,10 +10,10 @@ app.config.from_object('config')
 app.secret_key = 'integrador'  # Necesario para usar sesiones con Flask
 
 # Configuración de CORS para Angular y React
-CORS(app, resources={r"/*": {"origins": ["http://localhost:4200", "http://localhost:5173"]}}, supports_credentials=True)
+CORS(app, resources={r"/*": {"origins": ["http://localhost:4200", "http://localhost:5173", "https://crm-production-7f19.up.railway.app"]}}, supports_credentials=True)
 
 # Configuración de Flask-SocketIO
-socketio = SocketIO(app, cors_allowed_origins=["http://localhost:4200", "http://localhost:5173"], max_http_buffer_size=1e8, async_mode="eventlet")
+socketio = SocketIO(app, cors_allowed_origins=["http://localhost:4200", "http://localhost:5173", "https://crm-production-7f19.up.railway.app"], max_http_buffer_size=1e8, async_mode="eventlet")
 
 # Configuración de Flask-Login
 login_manager = LoginManager()
