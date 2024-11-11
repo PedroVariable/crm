@@ -11,7 +11,7 @@ app.config.from_object('config')
 app.secret_key = 'integrador'  # Necesario para usar sesiones con Flask
 
 # Configuración de sesión en Flask para múltiples dominios y persistencia
-app.config['SESSION_COOKIE_SAMESITE'] = 'None'
+app.config['SESSION_COOKIE_SAMESITE'] = None
 app.config['SESSION_COOKIE_SECURE'] = True  # Necesario si usas HTTPS
 app.config['SESSION_COOKIE_DOMAIN'] = '.railway.app'
 
