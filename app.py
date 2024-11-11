@@ -5,7 +5,7 @@ from flask_cors import CORS
 from models.models import mongo_db
 from bson import ObjectId
 import uuid
-
+from flask import after_this_request
 app = Flask(__name__)
 app.config.from_object('config')
 app.secret_key = 'integrador'  # Necesario para usar sesiones con Flask
@@ -23,7 +23,11 @@ socketio = SocketIO(app, cors_allowed_origins=[
 ], max_http_buffer_size=1e8, async_mode="eventlet")
 
 # Configuración de Flask-SocketIO
-socketio = SocketIO(app, max_http_buffer_size=1e8, async_mode="eventlet")
+socketio = SocketIO(app, cors_allowed_origins=[
+    "http://localhost:4200",
+    "http://localhost:5173",
+    "https://crm-production-7f19.up.railway.app"
+], max_http_buffer_size=1e8, async_mode="eventlet")
 
 # Configuración de Flask-Login
 login_manager = LoginManager()
@@ -35,6 +39,11 @@ class User(UserMixin):
         self.id = id
         self.nombre = nombre
 
+@app.after_request
+def add_cors_headers(response):
+    response.headers['Access-Control-Allow-Origin'] = 'http://localhost:5173'
+    response.headers['Access-Control-Allow-Credentials'] = 'true'
+    return response
 # user_loader para Flask-Login
 @login_manager.user_loader
 def load_user(user_id):
