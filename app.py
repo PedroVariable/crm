@@ -19,7 +19,6 @@ app.config['SESSION_COOKIE_DOMAIN'] = None
 socketio = SocketIO(app, cors_allowed_origins=[
     "http://localhost:4200",
     "http://localhost:5173",
-    "http://crm-production-7f19.up.railway.app",
     "https://crm-production-7f19.up.railway.app"
 ], max_http_buffer_size=1e8, async_mode="eventlet")
 
