@@ -1,4 +1,4 @@
-# Este import debe estar al inicio
+# Este import debe estar al inicio para aplicar los parches de eventlet antes que otros módulos.
 import eventlet
 eventlet.monkey_patch()
 
@@ -9,6 +9,7 @@ from flask_cors import CORS
 from models.models import mongo_db
 from bson import ObjectId
 import uuid
+import os
 
 app = Flask(__name__)
 app.config.from_object('config')
@@ -93,8 +94,8 @@ from sockets.chat import register_socketio_events
 register_socketio_events(socketio)
 
 if __name__ == '__main__':
-    import os
     if os.getenv("FLASK_ENV") == "production":
         print("Running in production mode with gunicorn.")
     else:
+        # Ejecuta la aplicación en modo de desarrollo localmente
         socketio.run(app, host='0.0.0.0', port=5000, debug=True)
