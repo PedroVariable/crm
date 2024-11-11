@@ -14,7 +14,7 @@ app.secret_key = 'integrador'  # Necesario para usar sesiones con Flask
 app.config['SESSION_COOKIE_SAMESITE'] = 'None'  # Permitir entre dominios
 app.config['SESSION_COOKIE_SECURE'] = True      # Necesario si usas HTTPS
  # Necesario si usas HTTPS
-app.config['SESSION_COOKIE_DOMAIN'] = None
+app.config['SESSION_COOKIE_DOMAIN'] = '.railway.app'
 
 # Configuración de CORS para Angular y React
 socketio = SocketIO(app, cors_allowed_origins=[
