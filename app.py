@@ -16,11 +16,12 @@ app.config['SESSION_COOKIE_SECURE'] = True  # Necesario si usas HTTPS
 app.config['SESSION_COOKIE_DOMAIN'] = None
 
 # Configuración de CORS para Angular y React
-CORS(app, resources={r"/*": {"origins": [
+socketio = SocketIO(app, cors_allowed_origins=[
     "http://localhost:4200",
     "http://localhost:5173",
+    "http://crm-production-7f19.up.railway.app",
     "https://crm-production-7f19.up.railway.app"
-]}}, supports_credentials=True)
+], max_http_buffer_size=1e8, async_mode="eventlet")
 
 # Configuración de Flask-SocketIO
 socketio = SocketIO(app, max_http_buffer_size=1e8, async_mode="eventlet")
