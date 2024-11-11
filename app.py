@@ -1,7 +1,3 @@
-# Este import debe estar al inicio para aplicar los parches de eventlet antes que otros módulos.
-import eventlet
-eventlet.monkey_patch()
-
 from flask import Flask, request, jsonify, session
 from flask_socketio import SocketIO
 from flask_login import current_user, login_user, UserMixin, LoginManager
@@ -9,8 +5,6 @@ from flask_cors import CORS
 from models.models import mongo_db
 from bson import ObjectId
 import uuid
-import os
-
 app = Flask(__name__)
 app.config.from_object('config')
 app.secret_key = 'integrador'  # Necesario para usar sesiones con Flask
@@ -67,6 +61,7 @@ def login():
     else:
         return jsonify({"status": "error", "message": "Missing user_id or username"}), 400
 
+
 @app.route('/current_user', methods=['GET'])
 def get_current_user():
     if current_user.is_authenticated:
@@ -94,8 +89,4 @@ from sockets.chat import register_socketio_events
 register_socketio_events(socketio)
 
 if __name__ == '__main__':
-    if os.getenv("FLASK_ENV") == "production":
-        print("Running in production mode with gunicorn.")
-    else:
-        # Ejecuta la aplicación en modo de desarrollo localmente
-        socketio.run(app, host='0.0.0.0', port=5000, debug=True)
+    socketio.run(app, host='0.0.0.0', port=5000, debug=True)
