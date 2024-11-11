@@ -17,7 +17,7 @@ app.secret_key = 'integrador'  # Necesario para usar sesiones con Flask
 CORS(app, resources={r"/*": {"origins": ["http://localhost:4200", "http://localhost:5173"]}}, supports_credentials=True)
 
 # Configuración de Flask-SocketIO con gevent
-socketio = SocketIO(app, cors_allowed_origins=["http://localhost:4200", "http://localhost:5173"], max_http_buffer_size=1e8, async_mode="gevent")
+socketio = SocketIO(app, cors_allowed_origins=["http://localhost:4200", "http://localhost:5173"], max_http_buffer_size=1e8, async_mode="eventlet")
 
 # Configuración de Flask-Login
 login_manager = LoginManager()
