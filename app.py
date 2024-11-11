@@ -5,15 +5,29 @@ from flask_cors import CORS
 from models.models import mongo_db
 from bson import ObjectId
 import uuid
+
 app = Flask(__name__)
 app.config.from_object('config')
 app.secret_key = 'integrador'  # Necesario para usar sesiones con Flask
 
+# Configuración de sesión en Flask para múltiples dominios y persistencia
+app.config['SESSION_COOKIE_SAMESITE'] = 'None'
+app.config['SESSION_COOKIE_SECURE'] = True  # Necesario si usas HTTPS
+app.config['SESSION_COOKIE_DOMAIN'] = '.up.railway.app'  # Ajusta al dominio correcto de producción
+
 # Configuración de CORS para Angular y React
-CORS(app, resources={r"/*": {"origins": ["http://localhost:4200", "http://localhost:5173", "https://crm-production-7f19.up.railway.app"]}}, supports_credentials=True)
+CORS(app, resources={r"/*": {"origins": [
+    "http://localhost:4200", 
+    "http://localhost:5173", 
+    "https://crm-production-7f19.up.railway.app"
+]}}, supports_credentials=True)
 
 # Configuración de Flask-SocketIO
-socketio = SocketIO(app, cors_allowed_origins=["http://localhost:4200", "http://localhost:5173", "https://crm-production-7f19.up.railway.app"], max_http_buffer_size=1e8, async_mode="eventlet")
+socketio = SocketIO(app, cors_allowed_origins=[
+    "http://localhost:4200", 
+    "http://localhost:5173", 
+    "https://crm-production-7f19.up.railway.app"
+], max_http_buffer_size=1e8, async_mode="eventlet")
 
 # Configuración de Flask-Login
 login_manager = LoginManager()
@@ -60,7 +74,6 @@ def login():
         return jsonify({"status": "success", "message": "User session created and room setup complete.", "session_token": session_token}), 200
     else:
         return jsonify({"status": "error", "message": "Missing user_id or username"}), 400
-
 
 @app.route('/current_user', methods=['GET'])
 def get_current_user():
