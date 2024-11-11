@@ -23,11 +23,7 @@ CORS(app, resources={r"/*": {"origins": [
 ]}}, supports_credentials=True)
 
 # Configuración de Flask-SocketIO
-socketio = SocketIO(app, cors_allowed_origins=[
-    "http://localhost:4200", 
-    "http://localhost:5173", 
-    "https://crm-production-7f19.up.railway.app"
-], max_http_buffer_size=1e8, async_mode="eventlet")
+socketio = SocketIO(app, max_http_buffer_size=1e8, async_mode="eventlet")
 
 # Configuración de Flask-Login
 login_manager = LoginManager()
@@ -77,6 +73,7 @@ def login():
 
 @app.route('/current_user', methods=['GET'])
 def get_current_user():
+    print(f"Current session: {session}")
     if current_user.is_authenticated:
         print(f"Usuario autenticado: {current_user.nombre}")
         return jsonify({
@@ -85,6 +82,7 @@ def get_current_user():
             "role": session.get("role")
         }), 200
     else:
+        print("Usuario no autenticado o sesión expirada")
         return jsonify({"error": "Usuario no autenticado"}), 401
 
 @app.route('/api/salas', methods=['GET'])
