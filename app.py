@@ -14,17 +14,10 @@ app.secret_key = 'integrador'  # Necesario para usar sesiones con Flask
 app.config['SESSION_COOKIE_SAMESITE'] = 'None'  # Permitir entre dominios
 app.config['SESSION_COOKIE_SECURE'] = True      # Necesario si usas HTTPS
  # Necesario si usas HTTPS
-app.config['SESSION_COOKIE_DOMAIN'] = '.railway.app'
+app.config['SESSION_COOKIE_DOMAIN'] = '.up.railway.app'
 
-# Configuración de CORS para Angular y React
-socketio = SocketIO(app, cors_allowed_origins=[
-    "http://localhost:4200",
-    "http://localhost:5173",
-    "https://crm-production-7f19.up.railway.app"
-], max_http_buffer_size=1e8, async_mode="eventlet")
 
-# Configuración de Flask-SocketIO
-# Mantén solo esta configuración de SocketIO
+# Configuración de SocketIO
 socketio = SocketIO(app, cors_allowed_origins=[
     "http://localhost:4200",
     "http://localhost:5173",
@@ -43,13 +36,12 @@ class User(UserMixin):
 
 @app.after_request
 def add_cors_headers(response):
-    allowed_origin = request.headers.get('Origin')
-    if allowed_origin in ["http://localhost:4200", "http://localhost:5173", "https://crm-production-7f19.up.railway.app"]:
-        response.headers['Access-Control-Allow-Origin'] = allowed_origin
+    response.headers['Access-Control-Allow-Origin'] = '*'  # Permitir todos los orígenes temporalmente para depuración
     response.headers['Access-Control-Allow-Credentials'] = 'true'
     response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
     response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
     return response
+
 
 # user_loader para Flask-Login
 @login_manager.user_loader
