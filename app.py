@@ -1,6 +1,3 @@
-import eventlet
-eventlet.monkey_patch()  # Asegúrate de que esto esté antes de cualquier otro import
-
 from flask import Flask, request, jsonify, session
 from flask_socketio import SocketIO
 from flask_login import current_user, login_user, UserMixin, LoginManager
@@ -8,7 +5,6 @@ from flask_cors import CORS
 from models.models import mongo_db
 from bson import ObjectId
 import uuid
-
 app = Flask(__name__)
 app.config.from_object('config')
 app.secret_key = 'integrador'  # Necesario para usar sesiones con Flask
@@ -16,7 +12,7 @@ app.secret_key = 'integrador'  # Necesario para usar sesiones con Flask
 # Configuración de CORS para Angular y React
 CORS(app, resources={r"/*": {"origins": ["http://localhost:4200", "http://localhost:5173"]}}, supports_credentials=True)
 
-# Configuración de Flask-SocketIO con gevent
+# Configuración de Flask-SocketIO
 socketio = SocketIO(app, cors_allowed_origins=["http://localhost:4200", "http://localhost:5173"], max_http_buffer_size=1e8, async_mode="eventlet")
 
 # Configuración de Flask-Login
@@ -32,10 +28,9 @@ class User(UserMixin):
 # user_loader para Flask-Login
 @login_manager.user_loader
 def load_user(user_id):
-    with app.app_context():  # Agrega el contexto de aplicación
-        # Cargar el usuario desde la sesión
-        username = session.get("username", "Usuario")  # Usa "Usuario" como predeterminado si no está en la sesión
-        return User(id=user_id, nombre=username)
+    # Cargar el usuario desde la sesión
+    username = session.get("username", "Usuario")  # Usa "Usuario" como predeterminado si no está en la sesión
+    return User(id=user_id, nombre=username)
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -56,16 +51,16 @@ def login():
         session["session_token"] = session_token
 
         # Almacena el token y rol en MongoDB
-        with app.app_context():  # Contexto de aplicación para operaciones con la base de datos
-            mongo_db.tokens.update_one(
-                {"user_id": user_id},
-                {"$set": {"user_id": user_id, "session_token": session_token, "role": role}},
-                upsert=True
-            )
+        mongo_db.tokens.update_one(
+            {"user_id": user_id},
+            {"$set": {"user_id": user_id, "session_token": session_token, "role": role}},
+            upsert=True
+        )
 
         return jsonify({"status": "success", "message": "User session created and room setup complete.", "session_token": session_token}), 200
     else:
         return jsonify({"status": "error", "message": "Missing user_id or username"}), 400
+
 
 @app.route('/current_user', methods=['GET'])
 def get_current_user():
@@ -82,11 +77,10 @@ def get_current_user():
 @app.route('/api/salas', methods=['GET'])
 def obtener_salas():
     try:
-        with app.app_context():  # Contexto de aplicación para operaciones con la base de datos
-            salas = mongo_db.mensajes.find({}, {"sala": 1})
-            lista_salas = [{"_id": str(sala["_id"]), "sala": sala["sala"]} for sala in salas]  # Convertir ObjectId a string
-            print("Salas obtenidas:", lista_salas)  # Depuración para verificar las salas
-            return jsonify(lista_salas), 200
+        salas = mongo_db.mensajes.find({}, {"sala": 1})
+        lista_salas = [{"_id": str(sala["_id"]), "sala": sala["sala"]} for sala in salas]  # Convertir ObjectId a string
+        print("Salas obtenidas:", lista_salas)  # Depuración para verificar las salas
+        return jsonify(lista_salas), 200
     except Exception as e:
         print("Error al obtener las salas:", str(e))
         return jsonify({"error": "No se pudieron obtener las salas"}), 500
