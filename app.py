@@ -1,3 +1,7 @@
+# Este import debe estar al inicio
+import eventlet
+eventlet.monkey_patch()
+
 from flask import Flask, request, jsonify, session
 from flask_socketio import SocketIO
 from flask_login import current_user, login_user, UserMixin, LoginManager
@@ -5,6 +9,7 @@ from flask_cors import CORS
 from models.models import mongo_db
 from bson import ObjectId
 import uuid
+
 app = Flask(__name__)
 app.config.from_object('config')
 app.secret_key = 'integrador'  # Necesario para usar sesiones con Flask
@@ -60,7 +65,6 @@ def login():
         return jsonify({"status": "success", "message": "User session created and room setup complete.", "session_token": session_token}), 200
     else:
         return jsonify({"status": "error", "message": "Missing user_id or username"}), 400
-
 
 @app.route('/current_user', methods=['GET'])
 def get_current_user():
