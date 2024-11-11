@@ -13,7 +13,7 @@ app.secret_key = 'integrador'  # Necesario para usar sesiones con Flask
 # Configuración de sesión en Flask para múltiples dominios y persistencia
 app.config['SESSION_COOKIE_SAMESITE'] = None
 app.config['SESSION_COOKIE_SECURE'] = True  # Necesario si usas HTTPS
-app.config['SESSION_COOKIE_DOMAIN'] = '.railway.app'
+app.config['SESSION_COOKIE_DOMAIN'] = None
 
 # Configuración de CORS para Angular y React
 CORS(app, resources={r"/*": {"origins": [
@@ -74,6 +74,7 @@ def login():
 @app.route('/current_user', methods=['GET'])
 def get_current_user():
     print(f"Current session: {session}")
+    print(f"Session ID: {session.get('user_id')}")
     if current_user.is_authenticated:
         print(f"Usuario autenticado: {current_user.nombre}")
         return jsonify({
@@ -84,6 +85,7 @@ def get_current_user():
     else:
         print("Usuario no autenticado o sesión expirada")
         return jsonify({"error": "Usuario no autenticado"}), 401
+
 
 @app.route('/api/salas', methods=['GET'])
 def obtener_salas():
