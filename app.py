@@ -13,12 +13,12 @@ app.secret_key = 'integrador'  # Necesario para usar sesiones con Flask
 # Configuración de sesión en Flask para múltiples dominios y persistencia
 app.config['SESSION_COOKIE_SAMESITE'] = 'None'
 app.config['SESSION_COOKIE_SECURE'] = True  # Necesario si usas HTTPS
-app.config['SESSION_COOKIE_DOMAIN'] = '.up.railway.app'  # Ajusta al dominio correcto de producción
+app.config['SESSION_COOKIE_DOMAIN'] = '.railway.app'
 
 # Configuración de CORS para Angular y React
 CORS(app, resources={r"/*": {"origins": [
-    "http://localhost:4200", 
-    "http://localhost:5173", 
+    "http://localhost:4200",
+    "http://localhost:5173",
     "https://crm-production-7f19.up.railway.app"
 ]}}, supports_credentials=True)
 
